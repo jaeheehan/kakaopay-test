@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
@@ -16,16 +17,17 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Log
-@Rollback
+@Transactional
 public class DeviceRepositoryTest {
 
     @Autowired
     DeviceRepository deviceRepository;
 
     @Test
+    @Rollback
     public void insertTest(){
         IntStream.range(1, 10).forEach(i -> {
-            Device device = new Device("test_" + i, "test_" + i);
+            Device device = new Device("DIS00" + i, "test_" + i);
             deviceRepository.save(device);
         });
 

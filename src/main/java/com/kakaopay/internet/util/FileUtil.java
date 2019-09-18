@@ -19,7 +19,7 @@ public class FileUtil {
 
         try(BufferedReader br = new BufferedReader(new FileReader(filePath))){
 
-            list = br.lines().skip(1).collect(Collectors.toList());
+            list = br.lines().collect(Collectors.toList());
 
         }catch (FileNotFoundException e){
             log.error(e.getMessage());

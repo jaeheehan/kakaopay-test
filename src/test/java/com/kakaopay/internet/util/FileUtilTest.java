@@ -15,7 +15,9 @@ public class FileUtilTest {
 
         List<String> list = FileUtil.readFile(filePath);
 
+        list.forEach(System.out::println);
+
         assertNotNull(list);
-        assertEquals(8, list.size());
+        assertEquals(9, list.size());
     }
 }

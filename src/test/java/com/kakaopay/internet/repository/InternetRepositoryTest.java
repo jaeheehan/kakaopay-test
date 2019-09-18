@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Log
-@Rollback
+@Transactional
 public class InternetRepositoryTest {
 
     @Autowired
@@ -26,37 +28,28 @@ public class InternetRepositoryTest {
     InternetRepository internetRepository;
 
     @Test
+    @Rollback
     public void insertInternetTest(){
 
         Device d1 = new Device("test1", "test1");
         deviceRepository.save(d1);
 
-        InternetPK p = new InternetPK(2011, d1);
+        InternetPK p1 = new InternetPK(2011, d1);
+        InternetPK p2 = new InternetPK(2012, d1);
 
-        Internet i = new Internet();
-        i.setInternetPK(p);
-        i.setRate(33.22);
-
-        internetRepository.save(i);
-
-        /*
         Internet i1 = new Internet();
-        i1.setYear(2011);
-        i1.setDevice(d1);
-        i1.setRate(22.22);
+        i1.setInternetPK(p1);
+        i1.setRate(33.22);
 
         Internet i2 = new Internet();
-        i2.setYear(2012);
-        i2.setDevice(d1);
-        i2.setRate(33.00);
+        i2.setInternetPK(p2);
+        i2.setRate(44.32);
 
         internetRepository.save(i1);
         internetRepository.save(i2);
 
-        assertEquals(2, internetRepository.count());
-        //assertEquals(Integer.valueOf(2011), internetRepository.findInternetsByYear(2011).get(0).getYear());
-        */
-
+        assertEquals(Integer.valueOf(2011), internetRepository.findById(p1).get().getInternetPK().getYear());
+        assertNotSame(Integer.valueOf(2011), internetRepository.findById(p2).get().getInternetPK().getYear());
 
     }
 
