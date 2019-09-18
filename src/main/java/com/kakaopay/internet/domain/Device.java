@@ -11,6 +11,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity
 public class Device {
 

@@ -21,12 +21,13 @@ public class DataConfiguration {
     @Bean
     public void setData(){
 
+        // 파일 가져오기
         List<String> list = FileUtil.readFile(getClass().getClassLoader().getResource("2019.csv").getPath());
-        list.stream().forEach(log::info);
 
+        // 디바이스 등록
         List<Device> devices = configService.registerDevices(list.get(0));
-        devices.stream().map(d -> d.getDevice_name()).forEach(log::info);
 
+        // 데이터 등록
         list.stream().skip(1).map(word -> word.split(",")).forEach(data -> {
             configService.saveUseData(devices, data);
         });
