@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Log
@@ -23,13 +25,11 @@ public class DeviceRepositoryTest {
     @Test
     public void insertTest(){
         IntStream.range(1, 10).forEach(i -> {
-            Device device = new Device();
-            device.setDevice_id("device_" + i);
-            device.setDevice_name("test_" + i);
-
+            Device device = new Device("test_" + i, "test_" + i);
             deviceRepository.save(device);
-
         });
+
+        assertEquals(9, deviceRepository.count());
     }
 
 }
