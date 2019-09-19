@@ -2,6 +2,7 @@ package com.kakaopay.internet.controller;
 
 import com.kakaopay.internet.domain.Device;
 import com.kakaopay.internet.service.StatService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ public class StatController {
         this.statService= statService;
     }
 
+    @ApiOperation(value = "기기목록")
     @GetMapping(path = "/devices")
     public ResponseEntity getDevices(){
         return ResponseEntity.ok(statService.getDeviceList());
