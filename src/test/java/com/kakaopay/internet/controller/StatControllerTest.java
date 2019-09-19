@@ -1,28 +1,27 @@
 package com.kakaopay.internet.controller;
 
-import com.kakaopay.internet.auth.CustomAuthenticationProvider;
-import com.kakaopay.internet.auth.JwtAuthenticationEntryPoint;
 import com.kakaopay.internet.domain.Device;
 import com.kakaopay.internet.domain.DeviceList;
 import com.kakaopay.internet.domain.InternetUseRow;
 import com.kakaopay.internet.domain.InternetUseRowList;
-import com.kakaopay.internet.service.MemberService;
 import com.kakaopay.internet.service.StatService;
-import com.kakaopay.internet.util.JwtTokenUtil;
-import lombok.NoArgsConstructor;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,30 +32,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(StatController.class)
-@RolesAllowed(value = {"ADMIN"})
+@ContextConfiguration
+@WebAppConfiguration
 public class StatControllerTest {
 
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private JwtTokenUtil jwtTokenUtil;
-
-    @MockBean
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    @MockBean
-    private CustomAuthenticationProvider customAuthenticationProvider;
-
-    @MockBean
-    private StatService statService;
+    @Autowired
+    private WebApplicationContext ctx;
 
     @Autowired
+    private StatService statService;
+
     private MockMvc mvc;
+
+    @Before
+    public void setUp(){
+        this.mvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+    }
+
+    @Configuration
+    @EnableWebMvc
+    public static class TestConfiguration {
+
+        @MockBean
+        private StatService statService;
+
+        @Bean
+        public StatController StatController() {
+            return new StatController(statService);
+        }
+
+        @Bean
+        public StatService statService(){
+            return statService;
+        }
+    }
 
     @Test
     public void getDevices() throws Exception {
