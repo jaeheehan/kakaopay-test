@@ -2,6 +2,7 @@ package com.kakaopay.internet.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.util.ResourceUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,7 +18,7 @@ public class FileUtil {
 
         List<String> list = null;
 
-        try(BufferedReader br = new BufferedReader(new FileReader(filePath))){
+        try(BufferedReader br = new BufferedReader(new FileReader(ResourceUtils.getFile(filePath)))){
 
             list = br.lines().collect(Collectors.toList());
 

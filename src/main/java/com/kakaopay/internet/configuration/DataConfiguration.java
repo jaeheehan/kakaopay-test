@@ -22,7 +22,7 @@ public class DataConfiguration {
     public void setData(){
 
         // 파일 가져오기
-        List<String> list = FileUtil.readFile(getClass().getClassLoader().getResource("2019.csv").getPath());
+        List<String> list = FileUtil.readFile("classpath:2019.csv");
 
         // 디바이스 등록
         List<Device> devices = configService.registerDevices(list.get(0));

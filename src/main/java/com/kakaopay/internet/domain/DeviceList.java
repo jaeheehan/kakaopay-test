@@ -1,6 +1,5 @@
 package com.kakaopay.internet.domain;
 
-import jdk.jfr.DataAmount;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

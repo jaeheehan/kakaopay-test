@@ -1,19 +1,21 @@
 package com.kakaopay.internet.util;
 
 import org.junit.Test;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.springframework.util.ResourceUtils.*;
 
 public class FileUtilTest {
 
     @Test
-    public void read(){
+    public void read() {
 
-        String filePath = getClass().getClassLoader().getResource("2019.csv").getPath();
-
-        List<String> list = FileUtil.readFile(filePath);
+        List<String> list = FileUtil.readFile("classpath:2019.csv");
 
         list.forEach(System.out::println);
 
