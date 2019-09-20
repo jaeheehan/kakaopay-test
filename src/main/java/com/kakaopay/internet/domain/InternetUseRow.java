@@ -31,7 +31,7 @@ public class InternetUseRow {
     public InternetUseRow(Internet internet){
         this.year = internet.getInternetPK().getYear();
         this.device_id = internet.getInternetPK().getDevice().getDevice_id();
-        this.device_name = internet.getInternetPK().getDevice().getDevice_id();
+        this.device_name = internet.getInternetPK().getDevice().getDevice_name();
         this.rate = internet.getRate();
     }
 }

@@ -1,9 +1,6 @@
 package com.kakaopay.internet.controller;
 
-import com.kakaopay.internet.domain.Device;
-import com.kakaopay.internet.domain.DeviceList;
-import com.kakaopay.internet.domain.InternetUseRow;
-import com.kakaopay.internet.domain.InternetUseRowList;
+import com.kakaopay.internet.domain.*;
 import com.kakaopay.internet.service.StatService;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,6 +102,66 @@ public class StatControllerTest {
                 .andExpect(jsonPath("$.device[0].device_id").value("DIS001"))
                 .andExpect(jsonPath("$.device[1].device_id").value("DIS002"))
                 ;
+    }
+
+    @Test
+    public void internetUseTopByYear() throws Exception{
+
+        InternetUseRow row = new InternetUseRow(2018, new Device("DIS001", "스마트폰"), 90.21);
+
+        given(statService.internetUseTopByYear(2018)).willReturn(new StatResult(row));
+
+        mvc.perform(get("/api/internetUseTopByYear").accept(MediaType.APPLICATION_JSON)
+                .param("year", "2018"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.year").value(2018))
+                .andExpect(jsonPath("$.result.device_id").value("DIS001"))
+                .andExpect(jsonPath("$.result.device_name").value("스마트폰"))
+                .andExpect(jsonPath("$.result.rate").value(90.21))
+        ;
+
+        given(statService.internetUseTopByYear(2000)).willReturn(new StatResult(null));
+
+        mvc.perform(get("/api/internetUseTopByYear").accept(MediaType.APPLICATION_JSON)
+                .param("year", "2000"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").doesNotExist())
+        ;
+    }
+
+    @Test
+    public void internetUseYearTopByDeviceTest() throws Exception {
+
+        InternetUseRow row = new InternetUseRow(2015, new Device("DIS003", "데스크탑"), 65.77);
+
+        Device device = new Device();
+        device.setDevice_id("DIS003");
+
+        given(statService.internetUseYearTopByDevice(device)).willReturn(new StatResult(row));
+
+        mvc.perform(get("/api/internetUseYearTopByDevice").accept(MediaType.APPLICATION_JSON)
+                .param("device_id", "DIS003"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.year").value(2015))
+                .andExpect(jsonPath("$.result.device_id").value("DIS003"))
+                .andExpect(jsonPath("$.result.device_name").value("데스크탑"))
+                .andExpect(jsonPath("$.result.rate").value(65.77))
+        ;
+
+
+        device.setDevice_id("DIS030");
+
+        given(statService.internetUseYearTopByDevice(device)).willReturn(new StatResult(null));
+
+        mvc.perform(get("/api/internetUseYearTopByDevice").accept(MediaType.APPLICATION_JSON)
+                .param("device_id", "DIS030"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").doesNotExist())
+        ;
     }
 
 }
