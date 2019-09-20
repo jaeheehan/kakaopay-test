@@ -39,7 +39,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Member member = memberRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("User not Exist"));
 
         if(!passwordEncoder.matches(password, member.getPassword())){
-            throw new BadCredentialsException("password is not valid");
+            throw new BadCredentialsException("Password Invalid");
         }
 
         List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();

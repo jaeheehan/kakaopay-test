@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
+
 @Service
 public class MemberServiceImpl implements MemberService {
 
@@ -29,9 +31,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Token signUp(Member member) {
-        Member user = new Member(member.getUsername(), passwordEncoder.encode(member.getPassword()));
-        memberRepository.save(user);
-        return generateToke(user);
+
+        if (member.getUsername() == null || member.getUsername().trim().isEmpty()){
+            throw new InvalidParameterException("Invalid Username");
+        }
+
+        if (member.getPassword() == null || member.getPassword().trim().isEmpty()){
+            throw new InvalidParameterException("Invalid Password");
+        }
+
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        memberRepository.save(member);
+
+        return generateToke(member);
     }
 
     @Override

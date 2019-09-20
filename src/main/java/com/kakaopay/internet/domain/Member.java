@@ -12,7 +12,6 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-@JsonPropertyOrder({"username", "password"})
 public class Member {
 
     @Id
