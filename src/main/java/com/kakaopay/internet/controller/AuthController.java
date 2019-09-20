@@ -1,6 +1,7 @@
 package com.kakaopay.internet.controller;
 
 import com.kakaopay.internet.domain.Member;
+import com.kakaopay.internet.domain.Token;
 import com.kakaopay.internet.service.MemberService;
 import com.kakaopay.internet.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,10 @@ public class AuthController {
         String pw = passwordEncoder.encode(member.getPassword());
         memberService.signUp(member.getUsername(), pw);
 
-        String token = jwtTokenUtil.generateToken(member);
+        String access_token = jwtTokenUtil.generateToken(member);
+        String refresh_token = jwtTokenUtil.generateRefreshToken(member);
+
+        Token token = new Token(access_token, refresh_token);
 
         return ResponseEntity.ok(token);
     }
