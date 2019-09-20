@@ -2,7 +2,9 @@ package com.kakaopay.internet.auth;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import com.kakaopay.internet.service.MemberService;
 import com.kakaopay.internet.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,12 +33,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private MemberService memberServiceImpl;
-
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Override
@@ -44,31 +41,32 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String requestTokenHeader = request.getHeader("Authorization");
         String username = null;
-        String jwtToken = null;
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
+            String jwtToken = requestTokenHeader.substring(7);
+
+            if("/auth/refresh".equals(request.getRequestURI())){
+                request.setAttribute("refresh_token", jwtToken);
+                chain.doFilter(request, response);
+                return;
+            }
+
             try {
                 username = jwtTokenUtil.getUsernameFromToken(true, jwtToken);
-            } catch (IllegalArgumentException e) {
-                log.error("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                log.error("JWT Token has expired");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new BadCredentialsException("Invalid Token");
             }
-        } else {
-            logger.warn("JWT Token does not begin with Bearer String");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            Member member = memberServiceImpl.loadUserByUsername(username);
-
-            List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
-            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+            List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(username, null, roles));
         }
+
         chain.doFilter(request, response);
     }
 }

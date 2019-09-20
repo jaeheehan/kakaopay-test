@@ -1,5 +1,6 @@
 package com.kakaopay.internet.domain;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
+@JsonPropertyOrder({"username", "password"})
 public class Member {
 
     @Id

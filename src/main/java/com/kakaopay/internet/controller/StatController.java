@@ -37,6 +37,8 @@ public class StatController {
 
     @ApiOperation(value = "연도별기기")
     @GetMapping(path = "/topDeviceEachYear")
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
+            required = true, dataType = "string", paramType = "header") })
     public ResponseEntity getTopDeviceEachYear() {
         return ResponseEntity.ok(statService.getTopDeviceEachYear());
     }

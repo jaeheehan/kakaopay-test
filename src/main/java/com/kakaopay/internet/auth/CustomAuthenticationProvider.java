@@ -2,6 +2,7 @@ package com.kakaopay.internet.auth;
 
 import com.kakaopay.internet.domain.Member;
 import com.kakaopay.internet.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
@@ -30,6 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
 
@@ -42,7 +45,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
         roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new UsernamePasswordAuthenticationToken(username, null, roles);
+        return new UsernamePasswordAuthenticationToken(username, password, roles);
     }
 
     @Override

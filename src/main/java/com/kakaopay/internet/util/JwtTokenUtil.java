@@ -39,6 +39,10 @@ public class JwtTokenUtil implements Serializable {
         return claimsResolver.apply(claims);
     }
 
+    public Date getExpirationDateFromToken(boolean isAccess, String token) {
+        return getClaimFromToken(isAccess, token, Claims::getExpiration);
+    }
+
     private Claims getAllClaimsFromToken(boolean isAccess, String token) {
         return Jwts.parser().setSigningKey(isAccess ? secret : refresh_key).parseClaimsJws(token).getBody();
     }
