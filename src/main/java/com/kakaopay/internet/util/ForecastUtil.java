@@ -14,12 +14,17 @@ public class ForecastUtil {
 
         TimeSeries series = TimeSeries.from(TimePeriod.oneYear(), values);
 
-        ArimaOrder order = ArimaOrder.order(0, 0, 0, 1,1,0);
+        ArimaOrder order = ArimaOrder.order(0, 0, 0, 1,2,1);
 
         Arima model = Arima.model(series, order, year);
 
         Forecast forecast = model.forecast(1);
 
-        return forecast.pointEstimates().mean();
+        double result = forecast.pointEstimates().mean();
+
+        result = (result < 0.0) ? 0.0 : result;
+        result = (result > 100.0) ? 100.0 : result;
+
+        return result;
     }
 }

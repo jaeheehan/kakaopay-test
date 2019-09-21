@@ -19,18 +19,18 @@ public class ArimaTest {
         // double[] values = {26.3, 33.5, 64.3, 64.2, 73.2, 85.1, 90.6, 90.5};
         // double[] values = {95.1, 93.9, 67.1, 61.5, 61.9, 58.5, 61.4, 51.2};
         // double[] values = {14.3, 13.1, 14.7, 14.1, 13.9, 19.3, 10.8, 17.3};
-        // double[] values = {9.5, 1.9, 4.4, 0.1, 0.2, 0.2, 0.2, 0.3};
+        double[] values = {9.5, 1.9, 4.4, 0.1, 0.2, 0.2, 0.2, 0.3};
 
-        //double[] values = {0, 0, 0, 0.9, 2.3, 2.1, 2, 3.3};
-        double[] values = {0, 0};
+        // double[] values = {0, 0, 0, 0.9, 2.3, 2.1, 2, 3.3};
+        // double[] values = {0, 0};
 
         TimeSeries series = TimeSeries.from(year, values);
 
-        ArimaOrder order = ArimaOrder.order(0, 0, 0, 1,1,0);
+        ArimaOrder order = ArimaOrder.order(0, 0, 0, 1,2,1);
 
         Arima model = Arima.model(series, order, year);
 
-        Forecast forecast = model.forecast(1);
+        Forecast forecast = model.forecast(7);
 
         System.out.println(forecast.toString());
     }
