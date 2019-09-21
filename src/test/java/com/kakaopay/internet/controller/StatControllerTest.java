@@ -90,10 +90,10 @@ public class StatControllerTest {
     @Test
     public void getTopDeviceEachYear() throws Exception{
 
-        InternetUseRow row1 = new InternetUseRow(2011, new Device("DIS001", "스마트폰"), 55.23);
-        InternetUseRow row2 = new InternetUseRow(2012, new Device("DIS002", "데스크탑"), 90.51);
+        InternetUseDevice row1 = new InternetUseDevice(2011, new Device("DIS001", "스마트폰"), 55.23);
+        InternetUseDevice row2 = new InternetUseDevice(2012, new Device("DIS002", "데스크탑"), 90.51);
 
-        List<InternetUseRow> list = Arrays.asList(row1, row2);
+        List<InternetUseDevice> list = Arrays.asList(row1, row2);
 
         given(statService.getTopDeviceEachYear()).willReturn(new InternetUseRowList(list));
 
@@ -117,7 +117,6 @@ public class StatControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result.year").value(2018))
-                .andExpect(jsonPath("$.result.device_id").value("DIS001"))
                 .andExpect(jsonPath("$.result.device_name").value("스마트폰"))
                 .andExpect(jsonPath("$.result.rate").value(90.21))
         ;
@@ -144,7 +143,6 @@ public class StatControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result.year").value(2015))
-                .andExpect(jsonPath("$.result.device_id").value("DIS003"))
                 .andExpect(jsonPath("$.result.device_name").value("데스크탑"))
                 .andExpect(jsonPath("$.result.rate").value(65.77))
         ;
@@ -162,7 +160,7 @@ public class StatControllerTest {
     @Test
     public void forecastUseByYearTest() throws Exception{
 
-        InternetUseRow row = new InternetUseRow(2019, null, "스마트폰", 90.77);
+        InternetUseRow row = new InternetUseRow(2019, "스마트폰", 90.77);
 
         given(statService.forecastUseByYear("DIS001")).willReturn(row);
 

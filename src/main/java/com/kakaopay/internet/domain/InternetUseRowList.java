@@ -12,5 +12,5 @@ import java.util.List;
 @EqualsAndHashCode
 public class InternetUseRowList {
 
-    List<InternetUseRow> device;
+    List<InternetUseDevice> device;
 }

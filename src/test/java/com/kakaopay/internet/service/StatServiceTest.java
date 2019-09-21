@@ -68,7 +68,7 @@ public class StatServiceTest {
         StatResult result1 = statService.internetUseTopByYear(2011);
         StatResult result2 = statService.internetUseTopByYear(2099);
 
-        assertThat(result1.getResult().getDevice_id()).isEqualTo("DIS001");
+        assertThat(result1.getResult().getDevice_name()).isEqualTo("스마트폰");
         assertThat(result2.getResult()).isNull();
     }
 
@@ -76,7 +76,8 @@ public class StatServiceTest {
     public void internetUseYearTopByDevice(){
 
         Device d1 = new Device("DIS001");
-        Internet i1 = new Internet(new InternetPK(2011, d1), 55.55);
+        Device d3 = new Device("DIS001", "스마트폰");
+        Internet i1 = new Internet(new InternetPK(2011, d3), 55.55);
 
         Device d2 = new Device("DIS002");
 
@@ -86,7 +87,7 @@ public class StatServiceTest {
         StatResult result1 = statService.internetUseYearTopByDevice("DIS001");
         StatResult result2 = statService.internetUseYearTopByDevice("DIS002");
 
-        assertThat(result1.getResult().getDevice_id()).isEqualTo("DIS001");
+        assertThat(result1.getResult().getDevice_name()).isEqualTo("스마트폰");
         assertThat(result2.getResult()).isNull();
     }
 
@@ -109,7 +110,6 @@ public class StatServiceTest {
 
         InternetUseRow result = statService.forecastUseByYear("DIS001");
 
-        assertThat(result.getDevice_id()).isNotEqualTo("DIS001");
         assertThat(result.getDevice_name()).isEqualTo("스마트폰");
         assertThat(result.getYear()).isEqualTo(2019);
         assertThat(result.getRate()).isNotZero();

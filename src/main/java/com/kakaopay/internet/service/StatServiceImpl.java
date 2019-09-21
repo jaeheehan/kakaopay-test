@@ -39,8 +39,8 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public InternetUseRowList getTopDeviceEachYear() {
-        List<InternetUseRow> list = internetRepository.findTopYearDevice().stream()
-                .map(m -> new InternetUseRow(m)).collect(Collectors.toList());
+        List<InternetUseDevice> list = internetRepository.findTopYearDevice().stream()
+                .map(m -> new InternetUseDevice(m)).collect(Collectors.toList());
         return new InternetUseRowList(list);
     }
 
@@ -78,7 +78,6 @@ public class StatServiceImpl implements StatService {
 
         return new InternetUseRow(
                 2019,
-                null,
                  device_name,
                  ForecastUtil.getForecast(rates)
         );
