@@ -6,6 +6,7 @@ import com.kakaopay.internet.service.ConfigService;
 import com.kakaopay.internet.service.MemberService;
 import com.kakaopay.internet.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.*;
 import java.util.List;
 
 @Configuration
@@ -24,12 +26,10 @@ public class DataConfiguration {
     ConfigService configService;
 
     @Bean
-    public void setData(){
-
-       // memberServiceImpl.signUp("test", "test");
+    public void setData() throws IOException {
 
         // 파일 가져오기
-        List<String> list = FileUtil.readFile("classpath:2019.csv");
+        List<String> list = FileUtil.readFile("2019.csv");
 
         // 디바이스 등록
         List<Device> devices = configService.registerDevices(list.get(0));
@@ -38,12 +38,6 @@ public class DataConfiguration {
         list.stream().skip(1).map(word -> word.split(",")).forEach(data -> {
             configService.saveUseData(devices, data);
         });
-
-
-
-
-
-
 
     }
 

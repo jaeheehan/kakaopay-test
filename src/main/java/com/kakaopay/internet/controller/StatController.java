@@ -1,9 +1,6 @@
 package com.kakaopay.internet.controller;
 
-import com.kakaopay.internet.domain.Device;
-import com.kakaopay.internet.domain.DeviceList;
-import com.kakaopay.internet.domain.InternetUseRowList;
-import com.kakaopay.internet.domain.StatResult;
+import com.kakaopay.internet.domain.*;
 import com.kakaopay.internet.service.StatService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -55,6 +52,15 @@ public class StatController {
             required = true, dataType = "string", paramType = "header") })
     public ResponseEntity<StatResult> internetUseYearTopByDevice(@RequestParam(name = "device_id") String device_id){
         return ResponseEntity.ok(statService.internetUseYearTopByDevice(device_id));
+    }
+
+
+    @ApiOperation(value = "특정 기기 다음 년도 예측")
+    @GetMapping(path = "/forecastUseByYear")
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
+            required = true, dataType = "string", paramType = "header") })
+    public ResponseEntity<InternetUseRow> forecastUseByYear(@RequestParam(name = "device_id") String device_id){
+        return ResponseEntity.ok(statService.forecastUseByYear(device_id));
     }
 
 }

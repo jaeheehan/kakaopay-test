@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration
@@ -156,6 +157,36 @@ public class StatControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").doesNotExist())
         ;
+    }
+
+    @Test
+    public void forecastUseByYearTest() throws Exception{
+
+        InternetUseRow row = new InternetUseRow(2019, null, "스마트폰", 90.77);
+
+        given(statService.forecastUseByYear("DIS001")).willReturn(row);
+
+        mvc.perform(get("/api/forecastUseByYear").accept(MediaType.APPLICATION_JSON)
+                .param("device_id", "DIS001"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rate").value(90.77))
+                .andExpect(jsonPath("$.year").value(2019))
+                .andExpect(jsonPath("$.device_name").value("스마트폰"))
+                .andExpect(jsonPath("$.device_id").doesNotExist())
+        ;
+
+        given(statService.forecastUseByYear("DIS999")).willReturn(null);
+
+        MockHttpServletResponse response = mvc.perform(get("/api/forecastUseByYear")
+                .accept(MediaType.APPLICATION_JSON)
+                .param("device_id", "DIS999"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn().getResponse()
+        ;
+
+        assertThat(response.getContentAsString()).isEmpty();
     }
 
 }

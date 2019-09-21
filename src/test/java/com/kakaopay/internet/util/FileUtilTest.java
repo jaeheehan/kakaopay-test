@@ -15,7 +15,7 @@ public class FileUtilTest {
     @Test
     public void read() {
 
-        List<String> list = FileUtil.readFile("classpath:2019.csv");
+        List<String> list = FileUtil.readFile("2019.csv");
 
         list.forEach(System.out::println);
 
