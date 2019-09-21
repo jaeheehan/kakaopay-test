@@ -13,8 +13,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -87,11 +91,8 @@ public class InternetRepositoryTest {
     @Test
     public void internetUseYearTopByDevice(){
 
-        Device device1 = new Device();
-        device1.setDevice_id("TEST001");
-
-        Device device2 = new Device();
-        device2.setDevice_id("TEST002");
+        Device device1 = new Device("TEST001");
+        Device device2 = new Device("TEST002");
 
         List<Internet> list1 =  internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(device1);
         List<Internet> list2 =  internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(device2);
@@ -101,6 +102,26 @@ public class InternetRepositoryTest {
 
         assertEquals(Integer.valueOf(2001), list1.get(0).getInternetPK().getYear());
         assertEquals(Integer.valueOf(2002), list2.get(0).getInternetPK().getYear());
+
+    }
+
+    @Test
+    public void findByInternetPKDevice(){
+
+        Device device = new Device("DIS001");
+        // 26.3, 33.5, 64.3, 64.2, 73.2, 85.1, 90.6, 90.5
+
+        List<Internet> list = internetRepository.findByInternetPKDevice(device);
+
+
+        double[] rates = list.stream().sorted(comparing(a -> a.getInternetPK().getYear()))
+                .mapToDouble(Internet::getRate).toArray();
+
+        assertNotNull(rates);
+        assertEquals(8, rates.length);
+        assertEquals(26.3, rates[0], 0);
+        assertEquals(90.5, rates[rates.length - 1], 0);
+
 
     }
 

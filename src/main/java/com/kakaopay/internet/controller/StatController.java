@@ -32,7 +32,7 @@ public class StatController {
         return ResponseEntity.ok(statService.getDeviceList());
     }
 
-    @ApiOperation(value = "연도별기기")
+    @ApiOperation(value = "년도별 최대 접속기기")
     @GetMapping(path = "/topDeviceEachYear")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
             required = true, dataType = "string", paramType = "header") })
@@ -41,7 +41,7 @@ public class StatController {
     }
 
 
-    @ApiOperation(value = "연도최대이용률기기")
+    @ApiOperation(value = "특정 년도 최대이용 접속기기")
     @GetMapping(path = "/internetUseTopByYear")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
             required = true, dataType = "string", paramType = "header") })
@@ -49,14 +49,12 @@ public class StatController {
         return ResponseEntity.ok(statService.internetUseTopByYear(year));
     }
 
-    @ApiOperation(value = "기기최대이용률년도")
+    @ApiOperation(value = "특정 기기 최대이용 년도")
     @GetMapping(path = "/internetUseYearTopByDevice")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
             required = true, dataType = "string", paramType = "header") })
     public ResponseEntity<StatResult> internetUseYearTopByDevice(@RequestParam(name = "device_id") String device_id){
-        Device device = new Device();
-        device.setDevice_id(device_id);
-        return ResponseEntity.ok(statService.internetUseYearTopByDevice(device));
+        return ResponseEntity.ok(statService.internetUseYearTopByDevice(device_id));
     }
 
 }

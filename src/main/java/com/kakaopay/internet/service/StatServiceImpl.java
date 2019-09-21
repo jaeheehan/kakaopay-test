@@ -3,6 +3,7 @@ package com.kakaopay.internet.service;
 import com.kakaopay.internet.domain.*;
 import com.kakaopay.internet.repository.DeviceRepository;
 import com.kakaopay.internet.repository.InternetRepository;
+import com.kakaopay.internet.util.ForecastUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 
 @Service
 @Slf4j
@@ -49,9 +52,36 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    public StatResult internetUseYearTopByDevice(Device device) {
+    public StatResult internetUseYearTopByDevice(String device_id) {
+
+        Device device = new Device(device_id);
         Internet internet = internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(device).stream().findFirst().orElse(null);
         InternetUseRow row = Optional.ofNullable(internet).map( m -> new InternetUseRow(m)).orElse(null);
+
         return new StatResult(row);
+    }
+
+    @Override
+    public InternetUseRow forecastUseByYear(String device_id) {
+
+        Device device = new Device(device_id);
+        List<Internet> list = internetRepository.findByInternetPKDevice(device);
+
+        if (list.isEmpty() || list.size() < 2){
+            return null;
+        }
+
+        String device_name = list.stream().findFirst().get().getInternetPK().getDevice().getDevice_name();
+
+        double[] rates = list.stream().sorted(comparing(a -> a.getInternetPK().getYear()))
+                .mapToDouble(Internet::getRate).toArray();
+
+        return new InternetUseRow(
+                2019,
+                null,
+                 device_name,
+                 ForecastUtil.getForecast(rates)
+        );
+
     }
 }

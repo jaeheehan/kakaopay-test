@@ -12,6 +12,8 @@ public interface StatService {
 
     StatResult internetUseTopByYear(int year);
 
-    StatResult internetUseYearTopByDevice(Device device);
+    StatResult internetUseYearTopByDevice(String device_id);
+
+    InternetUseRow forecastUseByYear(String device_id);
 
 }

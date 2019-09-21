@@ -20,4 +20,8 @@ public class Device {
     String device_id;
 
     String device_name;
+
+    public Device(String device_id){
+        this.device_id = device_id;
+    }
 }

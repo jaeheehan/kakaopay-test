@@ -136,10 +136,7 @@ public class StatControllerTest {
 
         InternetUseRow row = new InternetUseRow(2015, new Device("DIS003", "데스크탑"), 65.77);
 
-        Device device = new Device();
-        device.setDevice_id("DIS003");
-
-        given(statService.internetUseYearTopByDevice(device)).willReturn(new StatResult(row));
+        given(statService.internetUseYearTopByDevice("DIS003")).willReturn(new StatResult(row));
 
         mvc.perform(get("/api/internetUseYearTopByDevice").accept(MediaType.APPLICATION_JSON)
                 .param("device_id", "DIS003"))
@@ -151,10 +148,7 @@ public class StatControllerTest {
                 .andExpect(jsonPath("$.result.rate").value(65.77))
         ;
 
-
-        device.setDevice_id("DIS030");
-
-        given(statService.internetUseYearTopByDevice(device)).willReturn(new StatResult(null));
+        given(statService.internetUseYearTopByDevice("DIS030")).willReturn(new StatResult(null));
 
         mvc.perform(get("/api/internetUseYearTopByDevice").accept(MediaType.APPLICATION_JSON)
                 .param("device_id", "DIS030"))

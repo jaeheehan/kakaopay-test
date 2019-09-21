@@ -20,4 +20,6 @@ public interface InternetRepository extends CrudRepository<Internet, InternetPK>
 
     List<Internet> findTop1ByInternetPKDeviceOrderByRateDesc(Device device);
 
+    List<Internet> findByInternetPKDevice(Device device);
+
 }
