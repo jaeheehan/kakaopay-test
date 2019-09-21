@@ -1,8 +1,9 @@
 package com.kakaopay.internet.service;
 
-import com.kakaopay.internet.domain.*;
-
-import java.util.List;
+import com.kakaopay.internet.domain.DeviceList;
+import com.kakaopay.internet.domain.InternetUseRow;
+import com.kakaopay.internet.domain.InternetUseRowList;
+import com.kakaopay.internet.domain.StatResult;
 
 public interface StatService {
 

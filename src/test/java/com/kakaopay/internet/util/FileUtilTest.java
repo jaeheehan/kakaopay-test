@@ -1,14 +1,11 @@
 package com.kakaopay.internet.util;
 
 import org.junit.Test;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.springframework.util.ResourceUtils.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class FileUtilTest {
 

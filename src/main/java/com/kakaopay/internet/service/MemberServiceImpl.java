@@ -5,7 +5,6 @@ import com.kakaopay.internet.domain.Token;
 import com.kakaopay.internet.repository.MemberRepository;
 import com.kakaopay.internet.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

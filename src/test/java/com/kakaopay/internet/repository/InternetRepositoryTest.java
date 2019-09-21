@@ -13,12 +13,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.toList;
+import static java.util.Comparator.comparing;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)

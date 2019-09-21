@@ -1,6 +1,5 @@
 package com.kakaopay.internet.util;
 
-import com.github.signaflo.math.stats.distributions.Normal;
 import com.github.signaflo.timeseries.TimePeriod;
 import com.github.signaflo.timeseries.TimeSeries;
 import com.github.signaflo.timeseries.forecast.Forecast;

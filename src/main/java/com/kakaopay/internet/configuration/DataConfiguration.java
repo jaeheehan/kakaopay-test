@@ -1,20 +1,14 @@
 package com.kakaopay.internet.configuration;
 
 import com.kakaopay.internet.domain.Device;
-import com.kakaopay.internet.domain.Member;
 import com.kakaopay.internet.service.ConfigService;
-import com.kakaopay.internet.service.MemberService;
 import com.kakaopay.internet.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
