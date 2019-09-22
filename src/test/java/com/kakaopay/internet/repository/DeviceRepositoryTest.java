@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,12 +26,17 @@ public class DeviceRepositoryTest {
     @Test
     @Rollback
     public void insertTest(){
+
         IntStream.range(1, 10).forEach(i -> {
-            Device device = new Device("DIS00" + i, "test_" + i);
+            Device device = new Device("TEST00" + i, "test_" + i);
             deviceRepository.save(device);
         });
-
-        assertEquals(9, deviceRepository.count());
+        
+        assertTrue(deviceRepository.findById("TEST001").isPresent());
+        assertEquals("test_1", deviceRepository.findById("TEST001").get().getDevice_name());
+        assertFalse(deviceRepository.findById("TEST000").isPresent());
+        assertTrue(deviceRepository.findById("TEST009").isPresent());
+        assertFalse(deviceRepository.findById("TEST010").isPresent());
     }
 
 }

@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @Log
 @Transactional
+@Rollback
 public class InternetRepositoryTest {
 
     @Autowired
@@ -44,24 +45,25 @@ public class InternetRepositoryTest {
         InternetPK p3 = new InternetPK(2002, d1);
         InternetPK p4 = new InternetPK(2002, d2);
 
+        internetRepository.save(new Internet(p3, 11.2));
         internetRepository.save(new Internet(p1, 33.22));
         internetRepository.save(new Internet(p2, 4.23));
-        internetRepository.save(new Internet(p3, 11.2));
         internetRepository.save(new Internet(p4, 55.0));
 
     }
 
 
     @Test
-    @Rollback
     public void insertInternetTest(){
 
         Device testDevice = new Device("TEST001", "스마트폰");
 
+        Internet null_internet = new Internet(new InternetPK(0, null), 0.0);
+
         assertEquals(Integer.valueOf(2001), internetRepository.findById(
-                new InternetPK(2001, testDevice)).get().getInternetPK().getYear());
-        assertNotSame(Integer.valueOf(2001), internetRepository.findById(
-                new InternetPK(2002, testDevice)).get().getInternetPK().getYear());
+                new InternetPK(2001, testDevice)).orElse(null_internet).getInternetPK().getYear());
+        assertNotEquals(Integer.valueOf(2001), internetRepository.findById(
+                new InternetPK(2002, testDevice)).orElse(null_internet).getInternetPK().getYear());
 
     }
 
@@ -70,9 +72,13 @@ public class InternetRepositoryTest {
 
         List<Internet> list = internetRepository.findTopYearDevice();
 
-        assertEquals(8, list.stream().filter(m -> m.getInternetPK().getYear() > 2010).count());
-        assertEquals("스마트폰" , list.stream().filter(m -> m.getInternetPK().getYear() == 2001).findFirst().get().getInternetPK().getDevice().getDevice_name());
-        assertNotSame("데스크탑" , list.stream().filter(m -> m.getInternetPK().getYear() == 2001).findFirst().get().getInternetPK().getDevice().getDevice_name());
+        Internet null_internet = new Internet(new InternetPK(0, new Device(null, null)), 0.0);
+
+        assertEquals(2, list.stream().filter(m -> m.getInternetPK().getYear() < 2010).count());
+        assertEquals("스마트폰" , list.stream().filter(m -> m.getInternetPK().getYear() == 2001)
+                .findFirst().orElse(null_internet).getInternetPK().getDevice().getDevice_name());
+        assertNotSame("데스크탑" , list.stream().filter(m -> m.getInternetPK().getYear() == 2001)
+                .findFirst().orElse(null_internet).getInternetPK().getDevice().getDevice_name());
     }
 
     @Test
@@ -105,8 +111,7 @@ public class InternetRepositoryTest {
     @Test
     public void findByInternetPKDevice(){
 
-        Device device = new Device("DIS001");
-        // 26.3, 33.5, 64.3, 64.2, 73.2, 85.1, 90.6, 90.5
+        Device device = new Device("TEST001");
 
         List<Internet> list = internetRepository.findByInternetPKDevice(device);
 
@@ -115,15 +120,10 @@ public class InternetRepositoryTest {
                 .mapToDouble(Internet::getRate).toArray();
 
         assertNotNull(rates);
-        assertEquals(8, rates.length);
-        assertEquals(26.3, rates[0], 0);
-        assertEquals(90.5, rates[rates.length - 1], 0);
-
+        assertEquals(2, rates.length);
+        assertEquals(33.22, rates[0], 0);
+        assertEquals(11.2, rates[rates.length - 1], 0);
 
     }
-
-
-
-
 
 }
