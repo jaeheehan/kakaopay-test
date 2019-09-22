@@ -44,7 +44,6 @@ public class AuthControllerTest {
     @Autowired
     private MemberService memberService;
 
-
     private JacksonTester<Member> memberJacksonTester;
 
     private MockMvc mvc;
@@ -58,7 +57,6 @@ public class AuthControllerTest {
     @Configuration
     @EnableWebMvc
     public static class TestConfiguration {
-
 
         @MockBean
         private MemberService memberService;
@@ -112,7 +110,6 @@ public class AuthControllerTest {
             assertThat(e).hasCauseInstanceOf(InvalidParameterException.class);
         }
 
-
     }
 
     @Test
@@ -132,8 +129,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void signInTest2() throws Exception{
-
+    public void signInTest2() {
+        // Username Not Found
         Member member = new Member("test1", "1234");
 
         try{
@@ -147,7 +144,7 @@ public class AuthControllerTest {
 
     @Test
     public void signInTest3() throws Exception{
-
+        // Password Wrong
         Member member = new Member("test", "12345");
 
         try{

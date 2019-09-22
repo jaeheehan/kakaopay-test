@@ -75,7 +75,6 @@ public class StatControllerTest {
         deviceList.add(d1);
         deviceList.add(d2);
 
-
         given(statService.getDeviceList()).willReturn(new DeviceList(deviceList));
 
         mvc.perform(get("/api/devices").accept(MediaType.APPLICATION_JSON))
@@ -84,6 +83,9 @@ public class StatControllerTest {
                 .andExpect(jsonPath("@.devices").isArray())
                 .andExpect(jsonPath("@.devices.length()").value(2))
                 .andExpect(jsonPath("$.devices[0].device_id").value("DIS001"))
+                .andExpect(jsonPath("$.devices[0].device_name").value("스마트폰"))
+                .andExpect(jsonPath("$.devices[1].device_id").value("DIS002"))
+                .andExpect(jsonPath("$.devices[1].device_name").value("데스크탑"))
         ;
     }
 
@@ -100,8 +102,13 @@ public class StatControllerTest {
         mvc.perform(get("/api/topDeviceEachYear").accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.device[0].year").value(2011))
                 .andExpect(jsonPath("$.device[0].device_id").value("DIS001"))
+                .andExpect(jsonPath("$.device[0].device_name").value("스마트폰"))
+                .andExpect(jsonPath("$.device[0].rate").value(55.23))
+                .andExpect(jsonPath("$.device[1].year").value(2012))
                 .andExpect(jsonPath("$.device[1].device_id").value("DIS002"))
+                .andExpect(jsonPath("$.device[1].rate").value(90.51))
                 ;
     }
 
@@ -121,6 +128,7 @@ public class StatControllerTest {
                 .andExpect(jsonPath("$.result.rate").value(90.21))
         ;
 
+        // No Data
         given(statService.internetUseTopByYear(2000)).willReturn(new StatResult(null));
 
         mvc.perform(get("/api/internetUseTopByYear").accept(MediaType.APPLICATION_JSON)
@@ -147,6 +155,7 @@ public class StatControllerTest {
                 .andExpect(jsonPath("$.result.rate").value(65.77))
         ;
 
+        // No Data
         given(statService.internetUseYearTopByDevice("DIS030")).willReturn(new StatResult(null));
 
         mvc.perform(get("/api/internetUseYearTopByDevice").accept(MediaType.APPLICATION_JSON)
@@ -174,6 +183,7 @@ public class StatControllerTest {
                 .andExpect(jsonPath("$.device_id").doesNotExist())
         ;
 
+        // No Data Test
         given(statService.forecastUseByYear("DIS999")).willReturn(null);
 
         MockHttpServletResponse response = mvc.perform(get("/api/forecastUseByYear")
