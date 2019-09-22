@@ -82,7 +82,7 @@ findTop1ByInternetPKDeviceOrderByRateDesc
 ```
 
 #### 특정 기기 2019 년도 예측 데이터 API
-> 이전 데이터값과 추세를 바탕으로 데이터를 예측하는 시계열 예측 방법인 ARIMA를 이용함 (Open Source) 
+> 이전 데이터값과 추세를 바탕으로 데이터를 예측하는 시계열 예측 방법인 ARIMA를 이용함 (Open Source)  
 > 분기/반기/연간 단위로 다음 지표를 예측한다거나 주간/월간 단위로 지표를 예측할 수 있는 변수 제공  
 > AR은 자기 상관관계, MA는 평균이동 이며 ARIMA는 두개를 결합한 예측 방법   
 > ARIMA 모형은 ARIMA(1,2,1)를 사용하여 2019년도 데이터를 예측  
