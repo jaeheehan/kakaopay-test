@@ -44,14 +44,11 @@ public class AuthControllerTest {
     @Autowired
     private MemberService memberService;
 
-    private JacksonTester<Member> memberJacksonTester;
-
     private MockMvc mvc;
 
     @Before
     public void setUp(){
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx).build();
-        memberJacksonTester.initFields(this, new ObjectMapper());
     }
 
     @Configuration
@@ -80,8 +77,10 @@ public class AuthControllerTest {
 
         given(memberService.signUp(member)).willReturn(new Token("access", "refresh"));
 
+        ObjectMapper mapper = new ObjectMapper();
+
         mvc.perform(post("/auth/signUp").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                .content(memberJacksonTester.write(member).getJson()))
+                .content(mapper.writeValueAsString(member)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.access_token").value("access"))
@@ -90,14 +89,16 @@ public class AuthControllerTest {
 
 
     @Test
-    public void signUpTest2() throws  Exception{
+    public void signUpTest2() {
 
         Member member = new Member("", "1234");
+        ObjectMapper mapper = new ObjectMapper();
 
         try {
             mvc.perform(post("/auth/signUp").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .content(memberJacksonTester.write(member).getJson()));
+                    .content(mapper.writeValueAsString(member)));
         }catch (Exception e){
+            e.printStackTrace();
             assertThat(e).hasCauseInstanceOf(InvalidParameterException.class);
         }
 
@@ -105,8 +106,9 @@ public class AuthControllerTest {
 
         try {
             mvc.perform(post("/auth/signUp").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .content(memberJacksonTester.write(member).getJson()));
+                    .content(mapper.writeValueAsString(member)));
         }catch (Exception e){
+            e.printStackTrace();
             assertThat(e).hasCauseInstanceOf(InvalidParameterException.class);
         }
 
@@ -118,9 +120,10 @@ public class AuthControllerTest {
         Member member = new Member("test", "1234");
 
         given(memberService.signIn(member)).willReturn(new Token("access_signIn", "refresh_signIn"));
+        ObjectMapper mapper = new ObjectMapper();
 
         mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                .content(memberJacksonTester.write(member).getJson()))
+                .content(mapper.writeValueAsString(member)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.access_token").value("access_signIn"))
@@ -132,25 +135,29 @@ public class AuthControllerTest {
     public void signInTest2() {
         // Username Not Found
         Member member = new Member("test1", "1234");
+        ObjectMapper mapper = new ObjectMapper();
 
         try{
             mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .content(memberJacksonTester.write(member).getJson()));
+                    .content(mapper.writeValueAsString(member)));
         }catch (Exception e){
+            e.printStackTrace();
             assertThat(e).hasCauseInstanceOf(UsernameNotFoundException.class);
         }
 
     }
 
     @Test
-    public void signInTest3() throws Exception{
+    public void signInTest3() {
         // Password Wrong
         Member member = new Member("test", "12345");
+        ObjectMapper mapper = new ObjectMapper();
 
         try{
             mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                    .content(memberJacksonTester.write(member).getJson()));
+                    .content(mapper.writeValueAsString(member)));
         }catch (Exception e){
+            e.printStackTrace();
             assertThat(e).hasCauseInstanceOf(BadCredentialsException.class);
         }
 
@@ -166,13 +173,14 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.access_token").value("access"))
                 .andExpect(jsonPath("$.refresh_token").value("refresh"));
-        ;
+
 
         given(memberService.refreshToken("")).willThrow(new JwtException("Invalid Token"));
 
         try {
             mvc.perform(post("/auth/refresh").accept(MediaType.APPLICATION_JSON));
-        }catch (Exception e){
+        } catch (Exception e){
+            e.printStackTrace();
             assertThat(e).hasCauseInstanceOf(JwtException.class);
         }
     }
