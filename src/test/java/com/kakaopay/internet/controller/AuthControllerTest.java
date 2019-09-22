@@ -14,9 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -46,8 +44,6 @@ public class AuthControllerTest {
     @Autowired
     private MemberService memberService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     private JacksonTester<Member> memberJacksonTester;
 
@@ -63,15 +59,13 @@ public class AuthControllerTest {
     @EnableWebMvc
     public static class TestConfiguration {
 
-        @MockBean
-        AuthenticationManager authenticationManager;
 
         @MockBean
         private MemberService memberService;
 
         @Bean
         public AuthController AuthController() {
-            return new AuthController(authenticationManager, memberService);
+            return new AuthController(memberService);
         }
 
         @Bean
@@ -79,10 +73,6 @@ public class AuthControllerTest {
             return memberService;
         }
 
-        @Bean
-        public AuthenticationManager authenticationManager(){
-            return authenticationManager;
-        }
     }
 
     @Test
@@ -130,9 +120,6 @@ public class AuthControllerTest {
 
         Member member = new Member("test", "1234");
 
-        given(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken("test", "1234"))).willReturn(null);
-
         given(memberService.signIn(member)).willReturn(new Token("access_signIn", "refresh_signIn"));
 
         mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -149,10 +136,6 @@ public class AuthControllerTest {
 
         Member member = new Member("test1", "1234");
 
-        given(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken("test1", "1234")))
-                .willThrow(new UsernameNotFoundException("User not Exist"));
-
         try{
             mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
                     .content(memberJacksonTester.write(member).getJson()));
@@ -166,10 +149,6 @@ public class AuthControllerTest {
     public void signInTest3() throws Exception{
 
         Member member = new Member("test", "12345");
-
-        given(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken("test", "12345")))
-                .willThrow(new BadCredentialsException("Password Invalid"));
 
         try{
             mvc.perform(post("/auth/signIn").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)

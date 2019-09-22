@@ -56,6 +56,9 @@ public class MemberServiceTest {
 
         Member member = new Member("id", "pw");
 
+        when(memberRepository.findById("id")).thenReturn(Optional.of(member));
+        when(passwordEncoder.matches("pw", "pw")).thenReturn(true);
+
         when(jwtTokenUtil.generateToken(member)).thenReturn("access");
         when(jwtTokenUtil.generateRefreshToken(member)).thenReturn("refresh");
 

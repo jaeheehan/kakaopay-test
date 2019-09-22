@@ -5,6 +5,7 @@ import com.kakaopay.internet.domain.Token;
 import com.kakaopay.internet.repository.MemberRepository;
 import com.kakaopay.internet.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Token signIn(Member member) {
+    public Token signIn(Member login) {
+
+        Member member = memberRepository.findById(login.getUsername()).orElseThrow(()
+                -> new UsernameNotFoundException("User not Exist"));
+
+        if(!passwordEncoder.matches(login.getPassword(), member.getPassword())){
+            throw new BadCredentialsException("Password Invalid");
+        }
+
         return generateToke(member);
     }
 

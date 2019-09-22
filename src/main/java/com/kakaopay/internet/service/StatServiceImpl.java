@@ -67,7 +67,7 @@ public class StatServiceImpl implements StatService {
         Device device = new Device(device_id);
         List<Internet> list = internetRepository.findByInternetPKDevice(device);
 
-        if (list.isEmpty() || list.size() < 2){
+        if (list.isEmpty() || list.size() < 3){
             return null;
         }
 

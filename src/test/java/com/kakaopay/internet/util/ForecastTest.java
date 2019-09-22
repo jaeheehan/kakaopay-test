@@ -18,7 +18,7 @@ public class ForecastTest {
         assertThat(forecast_value).isNotZero();
         //assertThat(forecast_value).isCloseTo(60, within(20.0));
 
-        double[] values1 = {0, 0};
+        double[] values1 = {0, 0, 0};
         double forecast_value1 = ForecastUtil.getForecast(values1);
 
         assertThat(forecast_value1).isZero();

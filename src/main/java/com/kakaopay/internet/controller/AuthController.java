@@ -9,8 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +20,10 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private AuthenticationManager authenticationManager;
-
     private MemberService memberService;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, MemberService memberService){
-        this.authenticationManager = authenticationManager;
+    public AuthController(MemberService memberService){
         this.memberService = memberService;
     }
 
@@ -41,8 +36,6 @@ public class AuthController {
     @ApiOperation(value = "로그인")
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ResponseEntity<Token> signIn(@RequestBody Member member) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(member.getUsername(), member.getPassword()));
         return ResponseEntity.ok(memberService.signIn(member));
     }
 
