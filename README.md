@@ -61,7 +61,7 @@ No | Column | Type | PK | Description
 > Device 테이블을 조회해서 보여줌 
 
 #### 각 년도별 인터넷 뱅킹을 가장 많이 이용하는 접속 기기 API
-> Internet 테이블 년도별로 사용량이 많은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴
+> Internet 테이블 년도별로 사용량이 많은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴  
 > 쿼리 메서드가 아닌 Query 어노테이션을 통해서 실행함
 ```
 @Query(value = "select year, i.device_id, rate \n" +
@@ -82,10 +82,10 @@ findTop1ByInternetPKDeviceOrderByRateDesc
 ```
 
 #### 특정 기기 2019 년도 예측 데이터 API
-> 이전 데이터값과 추세를 바탕으로 데이터를 예측하는 시계열 예측 방법인 ARIMA Open Source 를 이용함
-> 분기/반기/연간 단위로 다음 지표를 예측한다거나 주간/월간 단위로 지표를 예측할 수 있는 변수 제공
-> AR은 자기 상관관계, MA는 평균 이동 이며 ARIMA는 두개를 결합한 예측 방법 
-> ARIMA 모형은 ARIMA(1,2,1)를 사용하여 2019년도 데이터를 예측
+> 이전 데이터값과 추세를 바탕으로 데이터를 예측하는 시계열 예측 방법인 ARIMA Open Source 를 이용함  
+> 분기/반기/연간 단위로 다음 지표를 예측한다거나 주간/월간 단위로 지표를 예측할 수 있는 변수 제공  
+> AR은 자기 상관관계, MA는 평균 이동 이며 ARIMA는 두개를 결합한 예측 방법   
+> ARIMA 모형은 ARIMA(1,2,1)를 사용하여 2019년도 데이터를 예측  
 
 #### 성능을 고려하여 10000 TPS 요청 아키텍처
 > 캐쉬를 통해 메모리를 이용하여 요청 처리와 비동기로 동작하는 경우 @Async 처리를 통해서 성능 향상 
@@ -97,9 +97,9 @@ public InternetUseRowList getTopDeviceEachYear() {
 > 로드밸런서 이용하여 부하를 분산하여 처리 (Amazon ALB, AutoScaling)
 
 #### API 인증 처리
-> JWT 통해서 token 발급
-> 패스워드는 bcryto 암호화를 이용하여 데이터 베이스에 저장함
-> 리프래쉬 토큰으로 새로운 토큰 발급 
+> JWT 통해서 token 발급  
+> 패스워드는 bcryto 암호화를 이용하여 데이터 베이스에 저장함  
+> 리프래쉬 토큰으로 새로운 토큰 발급   
 
 ## API 목록
 
