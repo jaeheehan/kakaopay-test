@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @Log
 @Transactional
-@Rollback
 public class InternetRepositoryTest {
 
     @Autowired
@@ -54,6 +53,7 @@ public class InternetRepositoryTest {
 
 
     @Test
+    @Rollback
     public void insertInternetTest(){
 
         Device testDevice = new Device("TEST001", "스마트폰");
