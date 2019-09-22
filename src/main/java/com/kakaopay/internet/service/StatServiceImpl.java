@@ -6,7 +6,9 @@ import com.kakaopay.internet.repository.InternetRepository;
 import com.kakaopay.internet.util.ForecastUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +31,6 @@ public class StatServiceImpl implements StatService {
         this.internetRepository = internetRepository;
     }
 
-    @Cacheable(value = "DeviceList")
     @Override
     public DeviceList getDeviceList() {
         log.info("getDeviceList");
@@ -37,11 +38,20 @@ public class StatServiceImpl implements StatService {
         return new DeviceList(devices);
     }
 
+    @Cacheable(value = "deviceEachYear")
     @Override
     public InternetUseRowList getTopDeviceEachYear() {
         List<InternetUseDevice> list = internetRepository.findTopYearDevice().stream()
                 .map(m -> new InternetUseDevice(m)).collect(Collectors.toList());
         return new InternetUseRowList(list);
+    }
+
+    @CacheEvict(value = "deviceEachYear")
+    @Async
+    @Override
+    public void cacheEvict() throws Exception{
+        Thread.sleep(5000);
+        log.info("Cache Evict Execute");
     }
 
     @Override
@@ -83,4 +93,6 @@ public class StatServiceImpl implements StatService {
         );
 
     }
+
+
 }

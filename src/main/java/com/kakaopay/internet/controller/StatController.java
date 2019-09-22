@@ -37,6 +37,14 @@ public class StatController {
         return ResponseEntity.ok(statService.getTopDeviceEachYear());
     }
 
+    @ApiOperation(value = "캐쉬 제거")
+    @GetMapping(path = "/refreshCache")
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer token",
+            required = true, dataType = "string", paramType = "header") })
+    public ResponseEntity refreshCache() throws Exception{
+        statService.cacheEvict();
+        return ResponseEntity.ok().build();
+    }
 
     @ApiOperation(value = "특정 년도 최대이용 접속기기")
     @GetMapping(path = "/internetUseTopByYear")

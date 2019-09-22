@@ -13,7 +13,7 @@
 - ARIMA algorithm
 
 ## 설치방법
-> github 또는 압축파일로 받은 후 IDE( 에서 Maven 프로젝트로 생성
+> github 또는 압축파일로 받은 후 IDE 에서 Maven 프로젝트로 생성
 
 ## 실행방법 
 > mvn 빌드 실행 또는 
@@ -55,12 +55,12 @@ No | Column | Type | PK | Description
 2 | DEVICE_ID | VARCHAR | O | 기기 아이디 
 2 | RATE | DOUBLE | X | 이용률 
  
-### API 
+### API 전략 
 
-#### 접속 기기 목록   
+#### 접속 기기 목록 API    
 > Device 테이블을 조회해서 보여줌 
 
-#### 각 년도별 인터넷 뱅킹을 가장 많이 이용하는 접속 기기 
+#### 각 년도별 인터넷 뱅킹을 가장 많이 이용하는 접속 기기 API
 > Internet 테이블 년도별로 사용량이 많은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴
 > 쿼리 메서드가 아닌 Query 어노테이션을 통해서 실행함
 ```
@@ -69,30 +69,30 @@ No | Column | Type | PK | Description
             "where  0 = (select count(*) from internet where year = i.year and rate > i.rate) " , nativeQuery = true)
 ``` 
 
-#### 특정 년도 인터넷 뱅킹이 가장 많이 접속하는 기기 
+#### 특정 년도 인터넷 뱅킹이 가장 많이 접속하는 기기 API
 > 쿼리 메서드를 이용하여 보여줌
 ```
 findTop1ByInternetPKYearOrderByRateDesc
 ```
 
-#### 특정 기기 에서 인터넷 뱅킹을 가장 많이 접속한 년도 
+#### 특정 기기 에서 인터넷 뱅킹을 가장 많이 접속한 년도 API
 > 쿼리 메서드를 이용하여 보여줌
 ```
 findTop1ByInternetPKDeviceOrderByRateDesc
 ```
 
-#### 특정 기기 2019 년도 예측 데이터 
+#### 특정 기기 2019 년도 예측 데이터 API
 > 이전 데이터값과 추세를 바탕으로 데이터를 예측하는 시계열 예측 방법인 ARIMA Open Source 를 이용함
 > 분기/반기/연간 단위로 다음 지표를 예측한다거나 주간/월간 단위로 지표를 예측할 수 있는 변수 제공
 > AR은 자기 상관관계, MA는 평균 이동 이며 ARIMA는 두개를 결합한 예측 방법 
 > ARIMA 모형은 ARIMA(1,2,1)를 사용하여 2019년도 데이터를 예측
 
 #### 성능을 고려하여 10000 TPS 요청 아키텍처
-> 캐쉬를 통해 메모리를 이용하여 요청 처리 
+> 캐쉬를 통해 메모리를 이용하여 요청 처리와 비동기로 동작하는 경우 @Async 처리를 통해서 성능 향상 
 ```
-@Cacheable(value = "DeviceList")
+@Cacheable(value = "deviceEachYear")
 @Override
-public DeviceList getDeviceList() {
+public InternetUseRowList getTopDeviceEachYear() {
 ```
 > 로드밸런서 이용하여 부하를 분산하여 처리 (Amazon ALB, AutoScaling)
 
@@ -114,7 +114,7 @@ No | Path | Method | Description
 7 | /api/internetUseYearTopByDevice | GET | 특정 기기 최대이용 년도
 8 | /api/forecastUseByYear | GET | 특정 기기 다음 년도 예측
 
-### 가입하기   
+### 1.가입하기   
 > 가입하는 유저이름과 패스워드를 입력 후 전송 토큰을 받아옴
  
 키 | 타입 | 설명
@@ -141,7 +141,7 @@ curl -v -X POST "http://localhost:8080/auth/signUp" \
 access_token | String | 접근 토큰
 refresh_token | String | 갱신 토큰
 
-### 로그인   
+### 2. 로그인   
 > 가입한 유저아이디와 패스워드로 로그인 하고 토큰을 받아옴
 
 키 | 타입 | 설명
@@ -167,7 +167,7 @@ curl -v -X POST "http://localhost:8080/auth/signIn" \
 access_token | String | 접근 토큰
 refresh_token | String | 갱신 토큰
 
-### 토큰갱신
+### 3. 토큰갱신
 > 리프래쉬 토큰으로 새로운 토큰을 받아오는 API 
 > Authorization 헤더에 "Bearer Token" 입력 
 
@@ -189,7 +189,7 @@ curl -v -X POST "http://localhost:8080/auth/refresh" \
 access_token | String | 접근 토큰
 refresh_token | String | 갱신 토큰
 
-### 전체디바이스목록
+### 4. 전체디바이스목록
 > 전체 디바이스 목록을 나타낸다. 
 
 예제
@@ -218,7 +218,7 @@ curl -v -X GET "http://localhost:8080/api/devices" \
 }
 ```
 
-### 년도 별 최대 이용 기기 리스트 
+### 5. 년도 별 최대 이용 기기 리스트 
 > 각 년도별로 인터넷 뱅킹을 가장 많이 이용하는 접속기기를 리스트로 출력한다. 
 
 예제
@@ -253,7 +253,7 @@ curl -v -X GET "http://localhost:8080/api/topDeviceEachYear" \
 }
 ```
 
-### 특정 년도 최대 접속 기기 
+### 6. 특정 년도 최대 접속 기기 
 > 특정 년도를 입력받고 최대 접속 기기의 정보를 출력한다.
 
 키 | 타입 | 설명
@@ -276,7 +276,7 @@ curl -v -X GET "http://localhost:8080/api/internetUseTopByYear?year=2011" \
 }
 ```
 
-### 특정 기기 최대 접속 년도 
+### 7. 특정 기기 최대 접속 년도 
 > 특정 기기아이디를 입력받고 최대 접속 년도의 정보를 출력한다.
 
 키 | 타입 | 설명
@@ -299,7 +299,7 @@ curl -v -X GET "http://localhost:8080/api/internetUseYearTopByDevice?device_id=D
 }
 ```
 
-### 특정 년도 예측 
+### 8. 특정 년도 예측 
 > 특정 기기아이디를 입력받고 예측 년도의 정보를 출력한다.
 
 키 | 타입 | 설명

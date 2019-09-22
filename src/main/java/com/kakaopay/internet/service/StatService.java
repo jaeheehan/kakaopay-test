@@ -17,4 +17,6 @@ public interface StatService {
 
     InternetUseRow forecastUseByYear(String device_id);
 
+    void cacheEvict() throws Exception;
+
 }
