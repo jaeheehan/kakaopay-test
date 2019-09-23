@@ -62,7 +62,7 @@ public class StatServiceTest {
         Device d1 = new Device("DIS001", "스마트폰");
         Internet i1 = new Internet(new InternetPK(2011, d1), 55.55);
 
-        given(internetRepository.findTop1ByInternetPKYearOrderByRateDesc(2011)).willReturn(Arrays.asList(i1));
+        given(internetRepository.findTop1ByInternetPKYearOrderByRateDesc(2011)).willReturn(Collections.singletonList(i1));
         given(internetRepository.findTop1ByInternetPKYearOrderByRateDesc(2099)).willReturn(Collections.emptyList());
 
         StatResult result1 = statService.internetUseTopByYear(2011);
@@ -81,13 +81,17 @@ public class StatServiceTest {
 
         Device d2 = new Device("DIS002");
 
-        given(internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(d1)).willReturn(Arrays.asList(i1));
-        given(internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(d2)).willReturn(Collections.emptyList());
+        given(internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(d1)).willReturn(Collections.singletonList(i1));
 
         StatResult result1 = statService.internetUseYearTopByDevice("DIS001");
-        StatResult result2 = statService.internetUseYearTopByDevice("DIS002");
 
         assertThat(result1.getResult().getDevice_name()).isEqualTo("스마트폰");
+
+        // null check
+        given(internetRepository.findTop1ByInternetPKDeviceOrderByRateDesc(d2)).willReturn(Collections.emptyList());
+
+        StatResult result2 = statService.internetUseYearTopByDevice("DIS002");
+
         assertThat(result2.getResult()).isNull();
     }
 
@@ -115,17 +119,17 @@ public class StatServiceTest {
         assertThat(result.getRate()).isNotZero();
 
 
-        List<Internet> list_one = Arrays.asList(i5);
+        // not enough Data
+        List<Internet> list_one = Arrays.asList(i4, i5);
 
         given(internetRepository.findByInternetPKDevice(device)).willReturn(list_one);
 
         InternetUseRow result_one = statService.forecastUseByYear("DIS001");
-
         assertThat(result_one).isNull();
 
-
+        // empty device
         Device device_null = new Device("DIS999");
-        List<Internet> list_empty = Collections.EMPTY_LIST;
+        List<Internet> list_empty = new ArrayList<>();
 
         given(internetRepository.findByInternetPKDevice(device_null)).willReturn(list_empty);
 

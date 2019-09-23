@@ -60,22 +60,28 @@ public class ConfigServiceTest{
 
         Device d1 = new Device("DIS001", "스마트폰");
         Device d2 = new Device("DIS002", "데스크탑");
+        Device d3 = new Device("DIS003", "기타");
 
         List<Device> deviceList = new ArrayList<>();
         deviceList.add(d1);
         deviceList.add(d2);
+        deviceList.add(d3);
 
-        String data = "2011,52.9,26.3,95.1,14.3,9.5,-";
+        String data = "2011,52.9,26.3,95.1,-";
 
         Internet internet1 = new Internet();
         internet1.setInternetPK(new InternetPK(2011, d1));
-        internet1.setRate(Double.valueOf(26.3));
+        internet1.setRate(26.3);
 
         Internet internet2 = new Internet();
         internet2.setInternetPK(new InternetPK(2011, d2));
-        internet2.setRate(Double.valueOf(95.1));
+        internet2.setRate(95.1);
 
-        List<Internet> list = Arrays.asList(internet1, internet2);
+        Internet internet3 = new Internet();
+        internet3.setInternetPK(new InternetPK(2011, d3));
+        internet3.setRate(0.0);
+
+        List<Internet> list = Arrays.asList(internet1, internet2, internet3);
 
         given(internetRepository.saveAll(list)).willReturn(list);
 
@@ -83,6 +89,7 @@ public class ConfigServiceTest{
 
         assertThat(internetList.get(0).getRate()).isEqualTo(26.3);
         assertThat(internetList.get(1).getRate()).isEqualTo(95.1);
+        assertThat(internetList.get(2).getRate()).isEqualTo(0.0);
     }
 
 

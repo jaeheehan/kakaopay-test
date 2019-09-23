@@ -8,8 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.InvalidParameterException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +52,22 @@ public class MemberServiceTest {
         assertThat(result.getAccess_token()).isEqualTo("access");
         assertThat(result.getRefresh_token()).isEqualTo("refresh");
 
+        try{
+            Member empty_member = new Member("", "pw");
+            memberService.signUp(empty_member);
+        }catch (Exception e){
+            e.printStackTrace();
+            assertThat(e).isInstanceOf(InvalidParameterException.class);
+        }
+
+        try{
+            Member empty_member = new Member("id", "");
+            memberService.signUp(empty_member);
+        }catch (Exception e){
+            e.printStackTrace();
+            assertThat(e).isInstanceOf(InvalidParameterException.class);
+        }
+
     }
 
     @Test
@@ -66,6 +85,24 @@ public class MemberServiceTest {
 
         assertThat(result.getAccess_token()).isEqualTo("access");
         assertThat(result.getRefresh_token()).isEqualTo("refresh");
+
+
+        try {
+            when(memberRepository.findById("id")).thenReturn(null);
+            memberService.signIn(member);
+        } catch (Exception e){
+            e.printStackTrace();
+            assertThat(e).isInstanceOf(NullPointerException.class);
+        }
+
+        try {
+            when(memberRepository.findById("id")).thenReturn(Optional.of(member));
+            when(passwordEncoder.matches("pw", "pw")).thenReturn(false);
+            memberService.signIn(member);
+        } catch (Exception e){
+            e.printStackTrace();
+            assertThat(e).isInstanceOf(BadCredentialsException.class);
+        }
     }
 
     @Test
@@ -82,6 +119,15 @@ public class MemberServiceTest {
 
         assertThat(result.getAccess_token()).isEqualTo("access");
         assertThat(result.getRefresh_token()).isEqualTo("refresh");
+
+        try {
+            when(jwtTokenUtil.getUsernameFromToken(false, "test")).thenReturn("username");
+            when(memberRepository.findById("username")).thenReturn(null);
+            memberService.signIn(member);
+        } catch (Exception e){
+            e.printStackTrace();
+            assertThat(e).isInstanceOf(NullPointerException.class);
+        }
 
     }
 }
