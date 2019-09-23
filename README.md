@@ -64,8 +64,8 @@ findAll
 ```
 
 #### 각 년도별 인터넷 뱅킹을 가장 많이 이용하는 접속 기기 API
-> Internet 테이블 년도별로 사용량이 많은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴  
-> 쿼리 메서드가 아닌 Query 어노테이션을 통해서 실행함
+> Internet 테이블에서 년도별로 이용률이 높은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴  
+> Query 어노테이션을 통해서 실행함
 ```
 @Query(value = "select year, i.device_id, rate \n" +
             " from internet i inner join device d on d.device_id = i.device_id\n" +
@@ -93,7 +93,8 @@ findTop1ByInternetPKDeviceOrderByRateDesc
 > ARIMA 모형은 ARIMA(1,2,1)를 사용하여 2019년도 데이터를 예측  
 
 #### 성능을 고려하여 10000 TPS 요청 아키텍처
-> 캐쉬를 통해 메모리를 이용하여 요청 처리와 비동기로 동작하는 경우 @Async 처리를 통해서 성능 향상 
+> 캐쉬를 이용한 요청 처리  
+> 비동기로 동작이 가능한 부분에  @Async 처리를 활용 
 ```
 @Cacheable(value = "deviceEachYear")
 @Override
