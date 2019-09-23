@@ -16,12 +16,12 @@
 > github 또는 압축파일로 받은 후 IDE 에서 Maven 프로젝트로 생성
 
 ## 실행방법 
-> mvn 빌드 실행 또는 
-> 첨부된 [internet.jar](https://github.com/jaeheehan/) 를 다운받아 아래 명령어로 실행  
+메이븐 package 실행 후 
+```
+java -jar target/internet-0.0.1-SNAPSHOT.jar
+```  
 > http://localhost:8080/swagger-ui.html 접속 테스트 가능 
-```
-java -jar internet.jar
-```
+
 
 ## 문제 해결 및 전략
 
