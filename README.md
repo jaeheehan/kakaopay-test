@@ -58,7 +58,10 @@ No | Column | Type | PK | Description
 ### API 전략 
 
 #### 접속 기기 목록 API    
-> Device 테이블을 조회해서 보여줌 
+> Spring Data JPA 를 활용 Device 테이블을 조회해서 보여줌
+``` 
+findAll
+```
 
 #### 각 년도별 인터넷 뱅킹을 가장 많이 이용하는 접속 기기 API
 > Internet 테이블 년도별로 사용량이 많은 기기를 랭킹을 정하고 1순위 해당하는 기기만 리스트로 가져옴  
@@ -70,13 +73,15 @@ No | Column | Type | PK | Description
 ``` 
 
 #### 특정 년도 인터넷 뱅킹이 가장 많이 접속하는 기기 API
-> 쿼리 메서드를 이용하여 보여줌
+> Spring Data JPA 를 활용 쿼리 메서드를 이용하여 보여줌  
+> 년도 선택 후 이용률 내림차순으로 정렬하고 첫번째 데이터를 가져옴 
 ```
 findTop1ByInternetPKYearOrderByRateDesc
 ```
 
 #### 특정 기기 에서 인터넷 뱅킹을 가장 많이 접속한 년도 API
-> 쿼리 메서드를 이용하여 보여줌
+> Spring Data JPA 를 활용 쿼리 메서드를 이용하여 보여줌  
+> 디바이스 선택 후 이용률 내림차순으로 정렬하고 첫번째 데이터를 가져옴 
 ```
 findTop1ByInternetPKDeviceOrderByRateDesc
 ```
@@ -94,7 +99,7 @@ findTop1ByInternetPKDeviceOrderByRateDesc
 @Override
 public InternetUseRowList getTopDeviceEachYear() {
 ```
-> 로드밸런서 이용하여 부하를 분산하여 처리 (Amazon ALB, AutoScaling)
+> 로드밸런서 도입하여 부하를 분산하여 처리 (Amazon ALB, AutoScaling)
 
 #### API 인증 처리
 > JWT 통해서 token 발급  
